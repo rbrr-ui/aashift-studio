@@ -24,15 +24,15 @@
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--ink);
-      background: radial-gradient(1200px 800px at 25% 20%, rgba(56,138,169,.14), transparent 60%),
-                  radial-gradient(900px 700px at 85% 40%, rgba(91,179,205,.10), transparent 55%),
-                  linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow-x:hidden;
-    }
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial;
+  color:#111;
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(56,138,169,.08), transparent 60%),
+    linear-gradient(180deg, #ffffff, #f6f8f9);
+}
+
 
     /* Subtle moving noise */
     .noise{
@@ -556,3 +556,4 @@
   </script>
 </body>
 </html>
+
