@@ -190,19 +190,23 @@ body{
     }
 
     /* Logo stage */
-    .logo-stage{
-      position:relative;
-      display:inline-block;
-      padding:18px 16px;
-      border-radius:24px;
-      background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 26px 80px rgba(0,0,0,.42);
-      overflow:hidden;
-      transform: translateY(8px);
-      opacity:0;
-      animation: stageIn .7s ease-out .12s both;
-    }
+.logo-stage{
+  position:relative;
+  display:inline-block;
+  padding:28px 26px;
+  border-radius:24px;
+
+  background:
+    linear-gradient(180deg, #ffffff, #f9fbfc);
+
+  border: 1px solid rgba(0,0,0,.08);
+
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.08);
+
+  overflow:hidden;
+}
+
     @keyframes stageIn{
       to{ transform: translateY(0); opacity:1; }
     }
@@ -556,4 +560,5 @@ body{
   </script>
 </body>
 </html>
+
 
