@@ -246,6 +246,129 @@
     }
     .toast .muted{ color: var(--muted); }
     .toast .accent{ color: var(--accent); font-weight: 900; }
+@keyframes breathe {
+  0% {
+    filter: drop-shadow(0 0 0 rgba(59,127,143,0));
+  }
+  50% {
+    filter: drop-shadow(0 0 18px rgba(59,127,143,0.45));
+  }
+  100% {
+    filter: drop-shadow(0 0 0 rgba(59,127,143,0));
+  }
+}
+
+.logo {
+  animation: breathe 6s ease-in-out infinite;
+}
+
+    @keyframes shiftIn {
+  0% {
+    transform: translateY(4px) scale(0.98);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.logo {
+  animation:
+    shiftIn 0.8s ease-out 0.1s both,
+    breathe 6s ease-in-out 1s infinite;
+}
+
+    /* ==== Logo animation: subtle, classy ==== */
+.logo-animated{
+  /* ふわっと立ち上がる + 呼吸 */
+  animation:
+    logoIn .8s ease-out .1s both,
+    logoBreath 6.2s ease-in-out 1.0s infinite;
+  transform-origin: 50% 55%;
+  will-change: transform, filter;
+}
+
+/* ページロード時に「Shift入った」感じの登場 */
+@keyframes logoIn{
+  0%   { opacity: 0; transform: translateY(6px) scale(0.985); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 常時：静かな呼吸グロー（主張しすぎない） */
+@keyframes logoBreath{
+  0%,100%{
+    transform: translateY(0) scale(1);
+    filter:
+      drop-shadow(0 0 0 rgba(56,138,169,0))
+      drop-shadow(0 0 0 rgba(56,138,169,0));
+  }
+  50%{
+    transform: translateY(-1px) scale(1.003);
+    filter:
+      drop-shadow(0 0 14px rgba(56,138,169,.24))
+      drop-shadow(0 0 30px rgba(56,138,169,.10));
+  }
+}
+
+/* たまに光が走る（ロゴの上をスッと） */
+.logoWrap{
+  position: relative;
+  display: inline-block;
+}
+
+/* ロゴの上に被せる光の膜 */
+.logoWrap::after{
+  content:"";
+  position:absolute;
+  inset:-8%;
+  pointer-events:none;
+
+  /* 斜めのハイライト */
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(56,138,169,0) 42%,
+    rgba(255,255,255,.45) 50%,
+    rgba(56,138,169,0) 58%,
+    transparent 100%
+  );
+
+  transform: translateX(-120%) rotate(0.001deg);
+  opacity: 0;
+  mix-blend-mode: screen;
+  filter: blur(.3px);
+
+  /* 8秒に1回ぐらい、スッ… */
+  animation: logoSheen 8.8s ease-in-out 1.8s infinite;
+  border-radius: 14px;
+}
+
+/* ハイライトが走る */
+@keyframes logoSheen{
+  0%, 70%{
+    opacity: 0;
+    transform: translateX(-120%);
+  }
+  74%{
+    opacity: .9;
+  }
+  84%{
+    opacity: .0;
+    transform: translateX(120%);
+  }
+  100%{
+    opacity: 0;
+    transform: translateX(120%);
+  }
+}
+
+/* ユーザーが動き苦手なら止める（お作法） */
+@media (prefers-reduced-motion: reduce){
+  .logo-animated{ animation: none; }
+  .logoWrap::after{ animation: none; }
+}
+
   </style>
 </head>
 
@@ -266,8 +389,11 @@
 
   <!-- Top content -->
   <main class="center" aria-label="Top">
-    <div>
-      <img class="logo" src="logo.png" alt="Aa Shift Studio logo" />
+<div class="logoWrap">
+  <img class="logo logo-animated" src="logo.svg" alt="Aa Shift Studio logo" />
+</div>
+
+
       <p class="tagline">We don’t raise peaks. We raise the baseline.</p>
       <p class="sub">
         A small studio building games and software that quietly shift what “normal” means.
@@ -372,3 +498,4 @@
   </script>
 </body>
 </html>
+
