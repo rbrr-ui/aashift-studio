@@ -1,19 +1,22 @@
 <!doctype html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="light" />
 
   <title>Aa Shift Studio</title>
-  <meta name="description" content="Aa Shift Studio — Baseline, shifted." />
+  <meta name="description" content="Aa Shift Studio — We don’t raise peaks. We raise the baseline." />
 
   <style>
     :root{
-      --accent: #3b7f8f; /* ロゴの a の色に合わせる */
+      --accent: #3b7f8f; /* match your logo's 'a' color */
       --text: #0b0b0b;
       --muted: #6b6b6b;
+      --line: rgba(0,0,0,.12);
       --bg: #ffffff;
+      --shadow: 0 18px 60px rgba(0,0,0,.12);
+      --radius: 18px;
     }
 
     *{ box-sizing:border-box; }
@@ -22,101 +25,350 @@
       margin:0;
       background:var(--bg);
       color:var(--text);
-      font-family: system-ui, -apple-system, "Segoe UI",
-                   "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      font-family: system-ui, -apple-system, "Segoe UI", Inter, Arial, sans-serif;
       letter-spacing:.02em;
     }
 
-    /* ===== Top ===== */
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:3px; }
+
+    /* ===== Top layout ===== */
+    .topbar{
+      position:fixed;
+      top:0; left:0; right:0;
+      height:64px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 18px;
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      z-index: 20;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+      letter-spacing:.03em;
+      user-select:none;
+    }
+    .dot{
+      width:10px; height:10px;
+      background: var(--accent);
+      border-radius:999px;
+      display:inline-block;
+    }
+
+    .menuBtn{
+      width:44px; height:44px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+    }
+    .menuBtn:hover{ border-color: rgba(0,0,0,.22); }
+
+    .burger{
+      width:18px; height:12px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+    .burger span{
+      height:2px;
+      background:#000;
+      border-radius:999px;
+      display:block;
+    }
+
     .center{
       min-height:100svh;
       display:grid;
       place-items:center;
       text-align:center;
-      padding:24px;
+      padding: 84px 24px 40px; /* leave space for topbar */
     }
 
     .logo{
-      width:min(640px, 92vw);
+      width:min(680px, 92vw);
       height:auto;
       margin-bottom:18px;
+      border-radius: 14px;
     }
 
     .tagline{
       font-size:clamp(18px, 2.6vw, 26px);
-      font-weight:800;
+      font-weight:900;
       margin:0;
+      line-height:1.25;
     }
 
     .sub{
-      margin-top:8px;
+      margin-top:10px;
       font-size:14px;
       color:var(--muted);
-    }
-
-    /* ===== Coming Soon ===== */
-    .coming{
-      min-height:100svh;
-      display:grid;
-      place-items:center;
-      text-align:center;
-      padding:24px;
-    }
-
-    .coming h1{
-      font-size:clamp(28px, 4vw, 40px);
-      margin:0 0 10px;
-      letter-spacing:.08em;
-    }
-
-    .coming p{
-      margin:0;
-      color:var(--muted);
-      font-size:14px;
+      max-width: 62ch;
+      margin-left:auto;
+      margin-right:auto;
     }
 
     footer{
       position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
+      bottom:0; left:0; right:0;
       text-align:center;
       padding:10px;
       font-size:12px;
       color:var(--muted);
+      background: linear-gradient(to top, rgba(255,255,255,.92), rgba(255,255,255,0));
+      z-index: 10;
     }
+
+    /* ===== Menu drawer ===== */
+    .backdrop{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.35);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease;
+      z-index: 30;
+    }
+    .backdrop.open{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .drawer{
+      position:fixed;
+      top:0; right:0;
+      height:100%;
+      width:min(360px, 88vw);
+      background:#fff;
+      border-left:1px solid var(--line);
+      box-shadow: var(--shadow);
+      transform: translateX(105%);
+      transition: transform .18s ease;
+      z-index: 40;
+      display:flex;
+      flex-direction:column;
+    }
+    .drawer.open{ transform: translateX(0); }
+
+    .drawerHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:16px;
+      border-bottom:1px solid var(--line);
+    }
+    .drawerTitle{
+      font-weight:900;
+      letter-spacing:.03em;
+    }
+    .closeBtn{
+      width:40px; height:40px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      font-size:18px;
+      line-height:1;
+    }
+    .closeBtn:hover{ border-color: rgba(0,0,0,.22); }
+
+    .drawerBody{
+      padding:14px 16px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .navItem{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:#fff;
+      cursor:pointer;
+      text-align:left;
+    }
+    .navItem:hover{ border-color: rgba(0,0,0,.22); }
+
+    .navLabel{
+      font-weight:900;
+      letter-spacing:.02em;
+    }
+    .navHint{
+      color: var(--muted);
+      font-size:12px;
+    }
+
+    .drawerFoot{
+      margin-top:auto;
+      padding: 14px 16px;
+      border-top:1px solid var(--line);
+      color: var(--muted);
+      font-size:12px;
+    }
+
+    /* ===== Toast ===== */
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(20px);
+      background:#fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 40px rgba(0,0,0,.14);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--text);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+      z-index: 50;
+      white-space: nowrap;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast .muted{ color: var(--muted); }
+    .toast .accent{ color: var(--accent); font-weight: 900; }
   </style>
 </head>
 
 <body>
+  <!-- Top bar -->
+  <div class="topbar" role="banner">
+    <div class="brand" aria-label="Aa Shift Studio">
+      <span class="dot" aria-hidden="true"></span>
+      Aa Shift Studio
+    </div>
 
-<!-- ===== Top Page ===== -->
-<div class="center" id="top">
-  <!-- ロゴ画像を同じフォルダに logo.png で置く -->
-  <img src="logo.png" alt="Aa Shift Studio" class="logo" />
-
-  <p class="tagline">Quietly shifting the baseline,<br>
-so what’s ordinary can rise.</p>
-  <p class="sub">Aa Shift Studio（エーエーシフトスタジオ）</p>
-</div>
-
-<!-- ===== Coming Soon Page (使い回し用) ===== -->
-<!--
-<div class="coming">
-  <div>
-    <h1>COMING SOON</h1>
-    <p>Aa Shift Studio</p>
+    <button class="menuBtn" id="menuBtn" aria-label="Open menu" aria-expanded="false">
+      <span class="burger" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
   </div>
-</div>
--->
 
-<footer>
-  © <span id="y"></span> Aa Shift Studio
-</footer>
+  <!-- Top content -->
+  <main class="center" aria-label="Top">
+    <div>
+      <img class="logo" src="logo.png" alt="Aa Shift Studio logo" />
+      <p class="tagline">We don’t raise peaks. We raise the baseline.</p>
+      <p class="sub">
+        A small studio building games and software that quietly shift what “normal” means.
+      </p>
+    </div>
+  </main>
 
-<script>
-  document.getElementById("y").textContent = new Date().getFullYear();
-</script>
+  <!-- Menu + backdrop -->
+  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
 
+  <aside class="drawer" id="drawer" aria-label="Menu">
+    <div class="drawerHead">
+      <div class="drawerTitle">Menu</div>
+      <button class="closeBtn" id="closeBtn" aria-label="Close menu">×</button>
+    </div>
+
+    <div class="drawerBody">
+      <button class="navItem" data-action="works" type="button">
+        <div>
+          <div class="navLabel">Works</div>
+          <div class="navHint">Things we’ve made</div>
+        </div>
+        <div class="navHint">→</div>
+      </button>
+
+      <button class="navItem" data-action="planning" type="button">
+        <div>
+          <div class="navLabel">Planning</div>
+          <div class="navHint">In concept / pre-production</div>
+        </div>
+        <div class="navHint">→</div>
+      </button>
+
+      <button class="navItem" data-action="contact" type="button">
+        <div>
+          <div class="navLabel">Contact</div>
+          <div class="navHint">Get in touch</div>
+        </div>
+        <div class="navHint">→</div>
+      </button>
+    </div>
+
+    <div class="drawerFoot">
+      © <span id="y"></span> Aa Shift Studio
+    </div>
+  </aside>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="accent">Preparing…</span> <span class="muted">(English)</span>
+  </div>
+
+  <footer>
+    Aa Shift Studio
+  </footer>
+
+  <script>
+    // year
+    document.getElementById("y").textContent = new Date().getFullYear();
+
+    const menuBtn = document.getElementById("menuBtn");
+    const closeBtn = document.getElementById("closeBtn");
+    const drawer  = document.getElementById("drawer");
+    const backdrop = document.getElementById("backdrop");
+    const toast = document.getElementById("toast");
+
+    function openMenu(){
+      drawer.classList.add("open");
+      backdrop.classList.add("open");
+      menuBtn.setAttribute("aria-expanded", "true");
+    }
+    function closeMenu(){
+      drawer.classList.remove("open");
+      backdrop.classList.remove("open");
+      menuBtn.setAttribute("aria-expanded", "false");
+    }
+
+    menuBtn.addEventListener("click", openMenu);
+    closeBtn.addEventListener("click", closeMenu);
+    backdrop.addEventListener("click", closeMenu);
+
+    // ESC to close
+    window.addEventListener("keydown", (e)=>{
+      if(e.key === "Escape") closeMenu();
+    });
+
+    // "Preparing..." toast (English)
+    let toastTimer = null;
+    function showToast(message){
+      toast.innerHTML = `<span class="accent">Preparing…</span> <span class="muted">(English)</span>`;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=> toast.classList.remove("show"), 1600);
+    }
+
+    document.querySelectorAll(".navItem").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        closeMenu();
+        showToast();
+      });
+    });
+  </script>
 </body>
 </html>
